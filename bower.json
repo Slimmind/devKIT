@@ -1,0 +1,19 @@
+{
+  "name": "slimKit",
+  "version": "0.0.1",
+  "authors": [
+    "Insayt <slimmind@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "normalize.css": "*",
+    "jquery": "2.*"
+  }
+}
