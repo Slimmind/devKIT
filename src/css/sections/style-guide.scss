@@ -9,7 +9,7 @@ html, body {
 }
 main {
   position: relative;
-  height: calc(100% - 60px);
+  min-height: 100%;
   overflow: hidden;
 }
 h1 {
