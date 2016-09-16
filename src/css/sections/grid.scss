@@ -37,7 +37,7 @@ $columns: 12;
 @mixin uncentered {
   margin-left: initial;
   margin-right: initial;
-  float: initial;
+  float: left;
 }
 //$mob: 1px;
 
@@ -54,7 +54,7 @@ $resolutions: 320px, 375px, 414px, 768px, 1024px, 1280px, 1440px, 1600px, 2560px
 
 $sizeList: mob xmob xxmob tab xtab lap xlap desk xdesk;
 
-@for $size from 1 to length($sizeList) {
+@for $size from 1 through length($sizeList) {
   @media screen and (min-width: nth($resolutions, $size)) {
     @for $i from 1 through $columns {
       $column-width: (($width / $columns) * $i) * 1%;
