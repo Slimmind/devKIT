@@ -11,13 +11,20 @@ var imageMin = require('gulp-imagemin');
 var pngCrush = require('imagemin-pngcrush');
 var sass = require('gulp-sass');
 var prefix = require('gulp-autoprefixer');
-var cmq = require('gulp-combine-media-queries');
-var cssMin = require('gulp-clean-css');
+var cmq = require('gulp-combine-mq');
+var cssMin = require('gulp-cssmin');
 var csscomb = require('gulp-csscomb');
 var rigger = require('gulp-rigger');
-var newer = require('gulp-newer');
-var webserver = require("gulp-webserver");
+
+var browserSync = require('browser-sync').create();
+var changed = require('gulp-changed');
+var env = require('gulp-environment');
+
 var pages = '_*.html';
+var syncPages = '*.html';
+var startPage = 'octoKIT.lo/menu.html';
+
+//gulp -p _home.html
 var _p = args.indexOf('-p');
 if (_p !== -1) {
   var pageName = args[_p + 1];
@@ -31,6 +38,7 @@ var pagesWatch = [pages, 'templates/*.html'];
 
 gulp.task('html', function () {
   gulp.src(pages)
+    .pipe(changed(syncPages))
     .pipe(rigger())
     .pipe(rename(function (path) {
       var newName = path.basename;
@@ -38,14 +46,18 @@ gulp.task('html', function () {
         newName = newName.slice(1);
       path.basename = newName;
     }))
-    .pipe(gulp.dest(''))
+    .pipe(gulp.dest(''));
 });
 
 // Images, Fonts
 
 gulp.task('images', function () {
-  return gulp.src('src/img/**')
-    .pipe(newer('build/img'))
+  return gulp.src('assets/images/**')
+    .pipe(gulp.dest('dist/images'));
+});
+
+gulp.task('images:prod', function () {
+  return gulp.src('assets/images/**')
     .pipe(imageMin({
       progressive: true,
       svgoPlugins: [
@@ -53,103 +65,101 @@ gulp.task('images', function () {
       ],
       use: [pngCrush()]
     }))
-    .pipe(gulp.dest('build/img'))
+    .pipe(gulp.dest('dist/images'));
 });
 
 gulp.task('fonts', function () {
-  gulp.src('src/fonts/**')
-    .pipe(newer('build/fonts'))
-    .pipe(gulp.dest('build/fonts'))
+  gulp.src('assets/fonts/**')
+    .pipe(gulp.dest('dist/fonts'));
 });
 
 // CSS
 
 gulp.task('scss', function () {
-  gulp.src(['src/css/global.scss', 'src/css/pages/*.scss'])
-    .pipe(newer('build/css'))
+  gulp.src(['assets/css/global.scss', 'assets/css/pages/*.scss'])
+    .pipe(changed('dist/css'))
     .pipe(sass())
-    .pipe(prefix('last 2 versions', '> 1%', 'ie 9'))
+    .pipe(prefix('last 2 versions', '> 1%', 'ie 10'))
     .pipe(cmq({
-      log: true,
-      beautify: true
+    	beautify: true
     }))
-    .pipe(gulp.dest('build/css'))
+    .pipe(gulp.dest('dist/css'))
+    .pipe(csscomb())
+    .pipe(
+      env.if.production(cssMin())
+    )
+    .pipe(
+      env.if.production(rename({suffix: '.min'}))
+    )
+    .pipe(gulp.dest('dist/css'));
+});
+
+gulp.task('scss:prod', function () {
+  gulp.src(['assets/css/global.scss', 'assets/css/pages/*.scss'])
+    .pipe(sass())
+    .pipe(prefix('last 2 versions', '> 1%', 'ie 10'))
+    .pipe(cmq({
+    	beautify: true
+    }))
+    .pipe(gulp.dest('dist/css'))
     .pipe(csscomb())
     .pipe(cssMin())
     .pipe(rename({
       suffix: '.min'
     }))
-    .pipe(gulp.dest('build/css'))
+    .pipe(gulp.dest('dist/css'));
 });
 
 // JS
 
-function getFiles(dir) {
-  return fs.readdirSync(dir)
-    .filter(function (file) {
-      return fs.statSync(path.join(dir, file)).isFile();
-    });
-}
-
-function mapJs(callback) {
-  if (typeof callback !== 'function') {
-    return;
-  }
-  getFiles('src/js')
-    .forEach(function (file) {
-      file = file.slice(0, -3);
-      callback(file);
-    });
-}
-
 gulp.task('jscs', function () {
-  mapJs(function (file) {
-    gulp.src(['src/js/' + file + '.js'])
-      .pipe(jscs());
-  });
+  gulp.src(['assets/js/*.js'])
+    .pipe(jscs());
 });
 
 gulp.task('lint', function () {
-  mapJs(function (file) {
-    gulp.src(['src/js/' + file + '.js'])
-      .pipe(jshint('.jshintrc'))
-      .pipe(jshint.reporter('jshint-stylish'));
-  });
+  gulp.src(['assets/js/*.js'])
+    .pipe(jshint('.jshintrc'))
+    .pipe(jshint.reporter('jshint-stylish'));
 });
 
 gulp.task('js', ['jscs', 'lint'], function () {
-  mapJs(function (file) {
-    gulp.src(['src/js/' + file + '/**', 'src/js/' + file + '.js'])
-      .pipe(newer('build/js'))
-      .pipe(concat(file + '.js'))
-      .pipe(gulp.dest('build/js'))
-      .pipe(uglify())
-      .pipe(rename({
-        suffix: '.min'
-      }))
-      .pipe(gulp.dest('build/js'))
-  });
+  gulp.src(['assets/js/*.js'])
+    .pipe(rigger())
+    .pipe(gulp.dest('dist/js'));
 });
 
-// SERVER
+gulp.task('js:prod', ['jscs', 'lint'], function () {
+  gulp.src(['assets/js/*.js'])
+    .pipe(changed('dist/js'))
+    .pipe(rigger())
+    .pipe(gulp.dest('dist/js'))
+    .pipe(uglify())
+    .pipe(rename({
+      suffix: '.min'
+    }))
+    .pipe(gulp.dest('dist/js'));
+});
 
-gulp.task('webserver', function() {
-  gulp.src('./')
-    .pipe(webserver({
-      livereload: true,
-      open: true,
-      port: 9000
-    }));
+// BROWSERSYNC
+gulp.task('serve', function () {
+  browserSync.init({
+    proxy: startPage
+  });
+
+  browserSync.watch(['dist/**/*.*', syncPages]).on('change', browserSync.reload)
+
 });
 
 // WATCH
 
 gulp.task('watch', function () {
-  gulp.watch('src/js/**/*.js', ['js']);
+  gulp.watch('assets/js/**/*.js', ['js']);
   gulp.watch(pagesWatch, ['html']);
-  gulp.watch('src/css/**/*.scss', ['scss']);
+  gulp.watch('assets/css/**/*.scss', ['scss']);
 });
 
 // DEFAULT
 
-gulp.task('default', ['html', 'images', 'fonts', 'scss', 'js', 'webserver', 'watch']);
+gulp.task('default', ['html', 'images', 'fonts', 'scss', 'js', 'serve', 'watch']);
+gulp.task('prod', ['html', 'images-prod', 'fonts', 'scss-prod', 'js-prod', 'watch']);
