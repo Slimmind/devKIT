@@ -18,11 +18,10 @@ var rigger = require('gulp-rigger');
 
 var browserSync = require('browser-sync').create();
 var changed = require('gulp-changed');
-var env = require('gulp-environment');
 
 var pages = '_*.html';
 var syncPages = '*.html';
-var startPage = 'octoKIT.lo/menu.html';
+var startPage = 'projectName.lo/menu.html';
 
 //gulp -p _home.html
 var _p = args.indexOf('-p');
@@ -38,84 +37,101 @@ var pagesWatch = [pages, 'templates/*.html'];
 
 gulp.task('html', function () {
   gulp.src(pages)
-      .pipe(changed(syncPages))
-      .pipe(rigger())
-      .pipe(rename(function (path) {
-        var newName = path.basename;
-        if (newName.charAt(0) === '_')
-          newName = newName.slice(1);
-        path.basename = newName;
-      }))
-      .pipe(gulp.dest(''));
+    .pipe(changed(syncPages))
+    .pipe(rigger())
+    .pipe(rename(function (path) {
+      var newName = path.basename;
+      if (newName.charAt(0) === '_')
+        newName = newName.slice(1);
+      path.basename = newName;
+    }))
+    .pipe(gulp.dest(''));
 });
 
 // Images, Fonts
 
 gulp.task('images', function () {
   return gulp.src('assets/images/**')
-      // .pipe(env.if.production(changed()))
-      // .pipe(env.if.production(imageMin({
-      //   progressive: true,
-      //   svgoPlugins: [
-      //     {removeViewBox: false}
-      //   ],
-      //   use: [pngCrush()]
-      // })))
-      .pipe(gulp.dest('dist/images'));
+    .pipe(gulp.dest('dist/images'));
+});
+
+gulp.task('images-prod', function () {
+  return gulp.src('assets/images/**')
+    .pipe(imageMin({
+      progressive: true,
+      svgoPlugins: [
+        {removeViewBox: false}
+      ],
+      use: [pngCrush()]
+    }))
+    .pipe(gulp.dest('dist/images'));
 });
 
 gulp.task('fonts', function () {
   gulp.src('assets/fonts/**')
-      .pipe(gulp.dest('dist/fonts'));
+    .pipe(gulp.dest('dist/fonts'));
 });
 
 // CSS
 
 gulp.task('scss', function () {
   gulp.src(['assets/css/global.scss', 'assets/css/pages/*.scss'])
-      .pipe(changed('dist/css'))
-      .pipe(sass())
-      .pipe(prefix('last 2 versions', '> 1%', 'ie 10'))
-      .pipe(cmq({
-        beautify: true
-      }))
-      .pipe(gulp.dest('dist/css'))
-      .pipe(csscomb())
-      .pipe(
-          env.if.production(cssMin())
-      )
-      .pipe(
-          env.if.production(rename({suffix: '.min'}))
-      )
-      .pipe(gulp.dest('dist/css'));
+    .pipe(changed('dist/css'))
+    .pipe(sass())
+    .pipe(prefix('last 2 versions', '> 1%', 'ie 10'))
+    .pipe(cmq({
+    	beautify: true
+    }))
+    .pipe(gulp.dest('dist/css'))
+    .pipe(csscomb())
+    .pipe(gulp.dest('dist/css'));
+});
+
+gulp.task('scss-prod', function () {
+  gulp.src(['assets/css/global.scss', 'assets/css/pages/*.scss'])
+    .pipe(sass())
+    .pipe(prefix('last 2 versions', '> 1%', 'ie 10'))
+    .pipe(cmq({
+    	beautify: true
+    }))
+    .pipe(gulp.dest('dist/css'))
+    .pipe(csscomb())
+    .pipe(cssMin())
+    .pipe(rename({
+      suffix: '.min'
+    }))
+    .pipe(gulp.dest('dist/css'));
 });
 
 // JS
 
 gulp.task('jscs', function () {
   gulp.src(['assets/js/*.js'])
-      .pipe(jscs());
+    .pipe(jscs());
 });
 
 gulp.task('lint', function () {
   gulp.src(['assets/js/*.js'])
-      .pipe(jshint('.jshintrc'))
-      .pipe(jshint.reporter('jshint-stylish'));
+    .pipe(jshint('.jshintrc'))
+    .pipe(jshint.reporter('jshint-stylish'));
 });
 
 gulp.task('js', ['jscs', 'lint'], function () {
   gulp.src(['assets/js/*.js'])
-      .pipe(
-          env.if.production(changed('dist/js'))
-      )
-      .pipe(rigger())
-      .pipe(
-          env.if.production(uglify())
-      )
-      .pipe(
-          env.if.production(rename({suffix: '.min'}))
-      )
-      .pipe(gulp.dest('dist/js'));
+    .pipe(rigger())
+    .pipe(gulp.dest('dist/js'));
+});
+
+gulp.task('js-prod', ['jscs', 'lint'], function () {
+  gulp.src(['assets/js/*.js'])
+    .pipe(changed('dist/js'))
+    .pipe(rigger())
+    .pipe(gulp.dest('dist/js'))
+    .pipe(uglify())
+    .pipe(rename({
+      suffix: '.min'
+    }))
+    .pipe(gulp.dest('dist/js'));
 });
 
 // BROWSERSYNC
@@ -136,6 +152,13 @@ gulp.task('watch', function () {
   gulp.watch('assets/css/**/*.scss', ['scss']);
 });
 
+gulp.task('watch-prod', function () {
+  gulp.watch('assets/js/**/*.js', ['js-prod']);
+  gulp.watch(pagesWatch, ['html']);
+  gulp.watch('assets/css/**/*.scss', ['scss-prod']);
+});
+
 // DEFAULT
 
 gulp.task('default', ['html', 'images', 'fonts', 'scss', 'js', 'serve', 'watch']);
+gulp.task('prod', ['html', 'images-prod', 'fonts', 'scss-prod', 'js-prod', 'watch-prod']);
