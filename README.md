@@ -66,7 +66,7 @@
     ```
     gulp
     ```
-12. *run gulp for production by command:*
+12. *run gulp for production (with minification of images, css and js files) by command:*
   
     ```
     gulp prod
