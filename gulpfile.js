@@ -18,10 +18,11 @@ var rigger = require('gulp-rigger');
 
 var browserSync = require('browser-sync').create();
 var changed = require('gulp-changed');
+var browserify = require('browserify');
 
 var pages = '_*.html';
 var syncPages = '*.html';
-var startPage = 'projectName.lo/menu.html';
+var startPage = 'devKIT.lo/menu.html';
 
 //gulp -p _home.html
 var _p = args.indexOf('-p');
@@ -152,13 +153,18 @@ gulp.task('watch', function () {
   gulp.watch('assets/css/**/*.scss', ['scss']);
 });
 
-gulp.task('watch-prod', function () {
-  gulp.watch('assets/js/**/*.js', ['js-prod']);
-  gulp.watch(pagesWatch, ['html']);
-  gulp.watch('assets/css/**/*.scss', ['scss-prod']);
+// BROWSERIFY
+
+gulp.task('browserify', function() {
+  return browserify('./src/javascript/app.js')
+    .bundle()
+    //Pass desired output filename to vinyl-source-stream
+    .pipe(source('bundle.js'))
+    // Start piping stream to tasks!
+    .pipe(gulp.dest('./build/'));
 });
 
 // DEFAULT
 
 gulp.task('default', ['html', 'images', 'fonts', 'scss', 'js', 'serve', 'watch']);
-gulp.task('prod', ['html', 'images-prod', 'fonts', 'scss-prod', 'js-prod', 'watch-prod']);
+gulp.task('prod', ['images-prod', 'scss-prod', 'js-prod']);
