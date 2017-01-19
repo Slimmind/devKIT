@@ -1,14 +1,12 @@
-/* //= includes/plugin_name.js */
+module.exports = function (name) {
+  console.log('Hello ' + name);
+};
 
 (function ($, window, document) {
   'use strict';
   var page = {
     init: function () {
-    },
-    noDev: function () {
-      if ((typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1)) {
-        $('.no-dev').removeClass('no-dev');
-      }
+
     },
     isDev: function () {
       return !$('html').hasClass('no-dev') || window.innerWidth < 1280;
@@ -31,3 +29,8 @@
   window.isDevice = page.isDev;
 
 })(jQuery, window, document);
+
+
+
+
+
