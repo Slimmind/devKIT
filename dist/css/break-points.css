@@ -724,9 +724,50 @@ label
     height: 100vh;
 }/*=======================================
     TESTING MEDIA QUERIES
-=======================================*/@font-face
+=======================================*/html,
+body
+{
+    height: 100%;
+}
+
+main
+{
+    min-height: 100vh;
+}
+
+main:after
+{
+    font: 24px/32px sans-serif;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    width: 320px;
+
+    transform: translateY(-50%) translateX(-50%);
+    text-align: center;
+
+    color: #fff;
+    text-shadow: 0 0 5px #020301;
+}
+
+@font-face
 {
     font-family: 'open_sansregular';font-weight: normal;font-style: normal;src: url('../fonts/opensans-regular-webfont.eot');src: url('../fonts/opensans-regular-webfont.eot?#iefix') format('embedded-opentype'), url('../fonts/opensans-regular-webfont.woff2') format('woff2'), url('../fonts/opensans-regular-webfont.woff') format('woff'), url('../fonts/opensans-regular-webfont.ttf') format('truetype'), url('../fonts/opensans-regular-webfont.svg#open_sansregular') format('svg');
+}
+
+@media (min-width: 600px)
+{
+    main
+    {
+        background-color: #7d2b0a;
+    }
+
+    main:after
+    {
+        content: 'for-tablet-portrait-up (min-width: 600px)';
+    }
 }
 
 @media screen and (min-width: 768px)
@@ -735,6 +776,32 @@ label
     .content iframe
     {
         width: 50%;
+    }
+}
+
+@media (min-width: 900px)
+{
+    main
+    {
+        background-color: #01e644;
+    }
+
+    main:after
+    {
+        content: 'for-tablet-landscape-up (min-width: 900px)';
+    }
+}
+
+@media (min-width: 1200px)
+{
+    main
+    {
+        background-color: #fb2ecc;
+    }
+
+    main:after
+    {
+        content: 'for-desktop-up (min-width: 1200px)';
     }
 }
 
@@ -767,6 +834,32 @@ label
     .content iframe
     {
         width: 33.33%;
+    }
+}
+
+@media (min-width: 1800px)
+{
+    main
+    {
+        background-color: #5c6628;
+    }
+
+    main:after
+    {
+        content: 'or-big-desktop-up \000a(min-width: 1800px)';
+    }
+}
+
+@media (max-width: 599px)
+{
+    main
+    {
+        background-color: #5023a8;
+    }
+
+    main:after
+    {
+        content: 'for-phone-only \000a(max-width:599px)';
     }
 }
 

@@ -1,0 +1,59 @@
+@import "../global";
+@import "../libs/variables";
+@import "../libs/mixins";
+//sections
+html,
+body {
+  height: 100%;
+}
+main {
+  min-height: 100vh;
+  &:after {
+    @include pos(absolute, center, center);
+    width: 320px;
+    color: $color-white;
+    text-shadow: 0 0 5px $color-black;
+    font: 24px/32px sans-serif;
+    text-align: center;
+  }
+}
+@include for-phone-only {
+  main {
+    background-color: rgb(random(255), random(255), random(255));
+    &:after {
+      content: "for-phone-only \000a(max-width:599px)";
+    }
+  }
+}
+@include for-tablet-portrait-up {
+  main {
+    background-color: rgb(random(255), random(255), random(255));
+    &:after {
+      content: "for-tablet-portrait-up (min-width: 600px)";
+    }
+  }
+}
+@include for-tablet-landscape-up {
+  main {
+    background-color: rgb(random(255), random(255), random(255));
+    &:after {
+      content: "for-tablet-landscape-up (min-width: 900px)";
+    }
+  }
+}
+@include for-desktop-up {
+  main {
+    background-color: rgb(random(255), random(255), random(255));
+    &:after {
+      content: "for-desktop-up (min-width: 1200px)";
+    }
+  }
+}
+@include for-big-desktop-up {
+  main {
+    background-color: rgb(random(255), random(255), random(255));
+    &:after {
+      content: "or-big-desktop-up \000a(min-width: 1800px)";
+    }
+  }
+}
