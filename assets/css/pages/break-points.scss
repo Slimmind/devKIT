@@ -53,7 +53,7 @@ main {
   main {
     background-color: rgb(random(255), random(255), random(255));
     &:after {
-      content: "or-big-desktop-up \000a(min-width: 1800px)";
+      content: "for-big-desktop-up (min-width: 1800px)";
     }
   }
 }
