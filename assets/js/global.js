@@ -1,5 +1,3 @@
-var func = require('./home');
-
 (function ($, window, document) {
   'use strict';
   var page = {
