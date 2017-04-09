@@ -18,11 +18,13 @@ var rigger = require('gulp-rigger');
 
 var browserSync = require('browser-sync').create();
 var changed = require('gulp-changed');
+var browserify = require('browserify');
+var reactify = require('reactify');
 var gulpIgnore = require('gulp-ignore');
 
 var pages = '_*.html';
 var syncPages = '*.html';
-var fileCondition = '*.min.*';
+var minFileCondition = '*.min.*';
 var startPage = 'octoKIT.lo/menu.html';
 
 //gulp -p _home.html
@@ -93,7 +95,7 @@ gulp.task('scss', function () {
 
 gulp.task('scss-prod', function () {
   gulp.src(['dist/css/*.css'])
-    .pipe(gulpIgnore.exclude(fileCondition))
+    .pipe(gulpIgnore.exclude(minFileCondition))
     .pipe(cssMin())
     .pipe(rename({
       suffix: '.min'
@@ -113,7 +115,9 @@ gulp.task('lint', function () {
     .pipe(jshint('.jshintrc'))
     .pipe(jshint.reporter('jshint-stylish'));
 });
-
+/*
+create new tasks for browserify and reactify, call it after 'lint' in js-task
+ */
 gulp.task('js', ['jscs', 'lint'], function () {
   gulp.src(['assets/js/*.js'])
     .pipe(rigger())
@@ -122,7 +126,7 @@ gulp.task('js', ['jscs', 'lint'], function () {
 
 gulp.task('js-prod', ['jscs', 'lint'], function () {
   gulp.src(['dist/js/*.js'])
-    .pipe(gulpIgnore.exclude(fileCondition))
+    .pipe(gulpIgnore.exclude(minFileCondition))
     .pipe(uglify())
     .pipe(rename({
       suffix: '.min'

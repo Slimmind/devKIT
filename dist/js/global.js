@@ -1,11 +1,10 @@
-var func = require('./home');
+console.log('Hello, libs');
 
 (function ($, window, document) {
   'use strict';
   var page = {
     init: function () {
       page.noDev();
-      page.sayHi();
     },
     noDev: function () {
       if ((typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1)) {
@@ -15,9 +14,7 @@ var func = require('./home');
     isDev: function () {
       return !$('html').hasClass('no-dev') || window.innerWidth < 1280;
     },
-    sayHi: function () {
-      func('world!');
-    },
+
     load: function () {
     },
     resize: function () {

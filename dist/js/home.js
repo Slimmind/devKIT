@@ -1,7 +1,3 @@
-module.exports = function (name) {
-  console.log('Hello ' + name);
-};
-
 (function ($, window, document) {
   'use strict';
   var page = {
