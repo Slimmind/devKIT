@@ -18,9 +18,11 @@ var rigger = require('gulp-rigger');
 
 var browserSync = require('browser-sync').create();
 var changed = require('gulp-changed');
-var browserify = require('browserify');
-var reactify = require('reactify');
 var gulpIgnore = require('gulp-ignore');
+
+var gutil = require ('gulp-util');
+var gReact = require('gulp-react');
+var gBabel = require('gulp-babel');
 
 var pages = '_*.html';
 var syncPages = '*.html';
@@ -115,6 +117,32 @@ gulp.task('lint', function () {
     .pipe(jshint('.jshintrc'))
     .pipe(jshint.reporter('jshint-stylish'));
 });
+
+gulp.task('reactjs', function () {
+  // return browserify({
+  //   entries: 'assets/js/apps/app.jsx',
+  //   extensions: ['.jsx'],
+  //   debug: true
+  // })
+  // .transform('babelify', {
+  //   presets: ['es2015', 'react'],
+  //   plugins: ['transform-class-properties']
+  // })
+  // .bundle()
+  // .on('error', function (err) {
+  //   gutil.log(gutil.colors.red.bold('[browserify error]'));
+  //   gutil.log(err.message);
+  //   this.emit('end');
+  // })
+  // .pipe(source('bundle.js'))
+  // .pipe(gulp.dest('dist/js/apps'));
+  return gulp.src('assets/js/apps/app.js')
+    .pipe(gBabel({
+      presets: ['es2015']
+    }))
+    // .pipe(gReact())
+    .pipe(gulp.dest('dist/js/apps'));
+});
 /*
 create new tasks for browserify and reactify, call it after 'lint' in js-task
  */
@@ -154,5 +182,5 @@ gulp.task('watch', function () {
 
 // DEFAULT
 
-gulp.task('default', ['html', 'images', 'fonts', 'scss', 'js', /*'serve',*/ 'watch']);
+gulp.task('default', ['html', 'images', 'fonts', 'scss', 'js', 'reactjs',/*'serve',*/ 'watch']);
 gulp.task('prod', ['images-prod', 'scss-prod', 'js-prod']);
