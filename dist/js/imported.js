@@ -1,3 +1,3 @@
-let func = function () {
-  return "apple";
-};
+const fruit = function () { return 'apple'; }
+
+// export default fruit;
