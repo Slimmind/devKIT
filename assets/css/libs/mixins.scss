@@ -1,0 +1,148 @@
+@import "variables";
+
+@mixin clearfix() {
+  &:before,
+  &:after {
+    content: " "; // 1
+    display: table; // 2
+  }
+  &:after {
+    clear: both;
+  }
+}
+@mixin dots(){
+  //display: block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+@mixin bg ($posX: null, $posY: null, $sizeX: null, $sizeY: null) {
+  background: {
+    repeat: no-repeat;
+    position: $posX $posY;
+    size: $sizeX $sizeY;
+  }
+}
+@mixin pos ($pos: null, $top: null, $left: null, $bottom: null, $right: null) {
+  position: $pos;
+  right: $right;
+  bottom: $bottom;
+  @if ($top == "center" and $left == "center") {
+    top: 50%;
+    left: 50%;
+    transform: translateY(-50%) translateX(-50%);
+  }
+  @if($top == "center" and $left != "center") {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  @if not($top == "center") {
+    top: $top;
+  }
+  @if($left == "center" and $top != "center") {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  @if not($left == "center") {
+    left: $left;
+  }
+}
+@mixin flex ($fd: null, $jc: null, $ai: null, $fw: null, $ac: null) {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: $fd;
+  flex-direction: $fd;
+  justify-content: $jc;
+  align-items: $ai;
+  flex-wrap: $fw;
+  align-content: $ac;
+}
+@mixin underlined ($pb: null, $width: null, $height: null, $left: null, $bottom: null, $color: null) {
+  position: relative;
+  padding-bottom: $pb;
+  &:after {
+    content: '';
+    position: absolute;
+    left: $left;
+    bottom: $bottom;
+    background-color: $color;
+    height: $height;
+    width: $width;
+  }
+}
+@mixin inlined ($font-size: null, $line-height:null) {
+  font-size: 0;
+  line-height: 0;
+  letter-spacing: -5px;
+  > * {
+    display: inline-block;
+    font-size: $font-size;
+    line-height: $line-height;
+    letter-spacing: normal;
+  }
+}
+@mixin placeholder {
+  &::-webkit-input-placeholder {
+    @content
+  }
+  &:-moz-placeholder {
+    @content
+  }
+  &::-moz-placeholder {
+    @content
+  }
+  &:-ms-input-placeholder {
+    @content
+  }
+}
+
+// -- MEDIA QUERIES
+@mixin ie {
+  @media (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    @content;
+  }
+}
+@mixin mob-landscape {
+  @media screen and(min-width: 480px) and (orientation: landscape) {
+    @content;
+  }
+}
+// 640
+@mixin small {
+  @media screen and(min-width: $small-breakpoint) {
+    @content;
+  }
+}
+// 768
+@mixin xsmall {
+  @media screen and(min-width: $xsmall-breakpoint) {
+    @content;
+  }
+}
+// 1025
+@mixin medium {
+  @media screen and(min-width: $medium-breakpoint) {
+    @content;
+  }
+}
+//1200
+@mixin xmedium {
+  @media screen and(min-width: $xmedium-breakpoint) {
+    @content;
+  }
+}
+// 1600
+@mixin large {
+  @media screen and(min-width: $large-breakpoint) {
+    @content;
+  }
+}
+// 1800
+@mixin xlarge {
+  @media screen and(min-width: $xlarge-breakpoint) {
+    @content;
+  }
+}
