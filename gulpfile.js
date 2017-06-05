@@ -18,18 +18,14 @@ var rigger = require('gulp-rigger');
 
 var browserSync = require('browser-sync').create();
 var changed = require('gulp-changed');
-var gulpIgnore = require('gulp-ignore');
 
-var browserify = require('browserify');
-var babelify = require('babelify');
-var source = require('vinyl-source-stream');
-var es = require('event-stream');
-var globe = require('globe');
+var del = require('del');
+var taskSequence = require('gulp-sequence');
+var sourceMaps = require('gulp-sourcemaps')
 
 var pages = '_*.html';
 var syncPages = '*.html';
-var minFileCondition = '*.min.*';
-var startPage = 'octoKIT.lo/menu.html';
+var startPage = 'devKIT.lo/menu.php';
 
 //gulp -p _home.html
 var _p = args.indexOf('-p');
@@ -42,7 +38,6 @@ if (_p !== -1) {
 var pagesWatch = [pages, 'templates/*.html'];
 
 //HTML include
-
 gulp.task('html', function () {
   gulp.src(pages)
     .pipe(changed(syncPages))
@@ -57,7 +52,6 @@ gulp.task('html', function () {
 });
 
 // Images, Fonts
-
 gulp.task('images', function () {
   return gulp.src('assets/images/**')
     .pipe(changed('dist/images'))
@@ -66,7 +60,6 @@ gulp.task('images', function () {
 
 gulp.task('images-prod', function () {
   return gulp.src('assets/images/**')
-    .pipe(changed('dist/images'))
     .pipe(imageMin({
       progressive: true,
       svgoPlugins: [
@@ -83,9 +76,9 @@ gulp.task('fonts', function () {
 });
 
 // CSS
-
 gulp.task('scss', function () {
   gulp.src(['assets/css/global.scss', 'assets/css/pages/*.scss'])
+    .pipe(sourceMaps.init())
     .pipe(changed('dist/css'))
     .pipe(sass())
     .pipe(prefix('last 2 versions', '> 1%', 'ie 10'))
@@ -94,12 +87,19 @@ gulp.task('scss', function () {
     }))
     .pipe(gulp.dest('dist/css'))
     .pipe(csscomb())
+    .pipe(sourceMaps.write())
     .pipe(gulp.dest('dist/css'));
 });
 
 gulp.task('scss-prod', function () {
-  gulp.src(['dist/css/*.css'])
-    .pipe(gulpIgnore.exclude(minFileCondition))
+  gulp.src(['assets/css/global.scss', 'assets/css/pages/*.scss'])
+    .pipe(sass())
+    .pipe(prefix('last 2 versions', '> 1%', 'ie 10'))
+    .pipe(cmq({
+      beautify: true
+    }))
+    .pipe(gulp.dest('dist/css'))
+    .pipe(csscomb())
     .pipe(cssMin())
     .pipe(rename({
       suffix: '.min'
@@ -108,7 +108,6 @@ gulp.task('scss-prod', function () {
 });
 
 // JS
-
 gulp.task('jscs', function () {
   gulp.src(['assets/js/*.js'])
     .pipe(jscs());
@@ -120,36 +119,17 @@ gulp.task('lint', function () {
     .pipe(jshint.reporter('jshint-stylish'));
 });
 
-gulp.task('browserify', function (done) {
-  // return browserify({entries: 'assets/js/apps/app.jsx', extensions: ['.jsx'], debug: true})
-  //       .transform('babelify', {presets: ['es2015', 'react']})
-  //       .bundle()
-  //       .pipe(source('bundle.js'))
-  //       .pipe(gulp.dest('dist/js/apps'));
-  glob('assets/js/apps/**.jsx', function(err, files) {
-        if(err) done(err);
-
-        var tasks = files.map(function(entry) {
-            return browserify({ entries: [entry] })
-                .bundle()
-                .pipe(source(entry))
-                // .pipe(rename({
-                //     extname: '.bundle.js'
-                // }))
-                .pipe(gulp.dest('dist/js/apps'));
-            });
-        es.merge(tasks).on('end', done);
-    })
-});
 gulp.task('js', ['jscs', 'lint'], function () {
   gulp.src(['assets/js/*.js'])
+    .pipe(sourceMaps.init())
     .pipe(rigger())
+    .pipe(sourceMaps.write())
     .pipe(gulp.dest('dist/js'));
 });
 
 gulp.task('js-prod', ['jscs', 'lint'], function () {
-  gulp.src(['dist/js/*.js'])
-    .pipe(gulpIgnore.exclude(minFileCondition))
+  gulp.src(['assets/js/*.js'])
+    .pipe(rigger())
     .pipe(uglify())
     .pipe(rename({
       suffix: '.min'
@@ -167,8 +147,12 @@ gulp.task('serve', function () {
 
 });
 
-// WATCH
+// CLEAN
+gulp.task('clean', function () {
+  del.sync(['dist/**']);
+} );
 
+// WATCH
 gulp.task('watch', function () {
   gulp.watch('assets/js/**/*.js', ['js']);
   gulp.watch(pagesWatch, ['html']);
@@ -177,5 +161,5 @@ gulp.task('watch', function () {
 
 // DEFAULT
 
-gulp.task('default', ['html', 'images', 'fonts', 'scss', 'js', 'browserify', /*'serve',*/ 'watch']);
-gulp.task('prod', ['images-prod', 'scss-prod', 'js-prod']);
+gulp.task('default', taskSequence('clean', 'html', 'images', 'fonts', 'scss', 'js', 'serve', 'watch'));
+gulp.task('prod', ['fonts', 'images-prod', 'scss-prod', 'js-prod']);
