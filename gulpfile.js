@@ -23,9 +23,14 @@ var del = require('del');
 var taskSequence = require('gulp-sequence');
 var sourceMaps = require('gulp-sourcemaps')
 
+var webpackStream = require('webpack-stream');
+var webpack = webpackStream.webpack;
+var named = require('vinyl-named');
+var plumber = require('gulp-plumber');
+
 var pages = '_*.html';
 var syncPages = '*.html';
-var startPage = 'devKIT.lo/menu.php';
+var startPage = 'octoKit.lo/menu.php';
 
 //gulp -p _home.html
 var _p = args.indexOf('-p');
@@ -152,6 +157,36 @@ gulp.task('clean', function () {
   del.sync(['dist/**']);
 } );
 
+// WEBPACK
+gulp.task('webpack', function () {
+  var option = {
+    watch: true,
+    devtool: 'cheap-module-inline-source-map',
+    module:{
+      loaders: [{
+        test: /\.js$/,
+        include: path.join(__dirname, 'assets'),
+        loader: 'babel?presets[]=es2015'
+      }]
+    },
+    plugins: [
+      new webpack.NoErrorsPlugin()
+    ]
+  };
+  gulp.src('assets/js/*.js')
+    .pipe(plumber({
+      errorHandler: notify.onError(function (err) {
+        return ({
+          title: 'Webpack',
+          message: err.message
+        })
+      })
+    }))
+    .pipe(named())
+    .pipk(webpackStream(options))
+    .pipe(gulp.dest('dist/js'))
+} );
+
 // WATCH
 gulp.task('watch', function () {
   gulp.watch('assets/js/**/*.js', ['js']);
@@ -161,5 +196,5 @@ gulp.task('watch', function () {
 
 // DEFAULT
 
-gulp.task('default', taskSequence('clean', 'html', 'images', 'fonts', 'scss', 'js', 'serve', 'watch'));
+gulp.task('default', taskSequence('clean', 'html', 'images', 'fonts', 'scss', 'js', /*'serve',*/ 'watch'));
 gulp.task('prod', ['fonts', 'images-prod', 'scss-prod', 'js-prod']);
