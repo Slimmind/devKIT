@@ -27,6 +27,8 @@
     "babel-preset-es2015": "latest",
     "del": "latest",
     "gulp-cssmin": "^0.1.6",
+    "gulp-debug": "^3.1.0",
+    "gulp-notify": "^3.0.0",
     "gulp-plumber": "^1.1.0",
     "gulp-sequence": "latest",
     "gulp-sourcemaps": "^2.6.0",

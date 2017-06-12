@@ -5,7 +5,7 @@
 
     },
     isDev: function () {
-      return !$('html').hasClass('no-dev') || window.innerWidth < 1280;
+      return !$('html')).hasClass('no-dev') || window.innerWidth < 1280;
     },
     load: function () {
     },
