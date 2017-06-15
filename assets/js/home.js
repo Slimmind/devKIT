@@ -2,7 +2,7 @@
   'use strict';
   var page = {
     init: function () {
-
+      console.log('hello!');
     },
     isDev: function () {
       return !$('html').hasClass('no-dev') || window.innerWidth < 1280;

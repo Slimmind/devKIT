@@ -94,7 +94,6 @@ gulp.task('scss', function () {
         }
       })
     }))
-    .pipe(debug({title: 'src'}))
     .pipe(sourceMaps.init())
     .pipe(changed('dist/css'))
     .pipe(sass())
@@ -105,7 +104,6 @@ gulp.task('scss', function () {
     .pipe(gulp.dest('dist/css'))
     .pipe(csscomb())
     .pipe(sourceMaps.write())
-    .pipe(debug({title: 'dest'}))
     .pipe(gulp.dest('dist/css'));
 });
 
@@ -122,6 +120,7 @@ gulp.task('scss-prod', function () {
     .pipe(rename({
       suffix: '.min'
     }))
+    .pipe(debug({title: 'dest'}))
     .pipe(gulp.dest('dist/css'));
 });
 
@@ -137,7 +136,7 @@ gulp.task('lint', function () {
     .pipe(jshint.reporter('jshint-stylish'));
 });
 
-gulp.task('js', ['jscs', 'lint'], function () {
+gulp.task('js', ['jscs', 'webpack', 'lint'], function () {
   gulp.src(['assets/js/*.js'])
     .pipe(sourceMaps.init())
     .pipe(rigger())
@@ -172,8 +171,20 @@ gulp.task('clean', function () {
 } );
 
 // WEBPACK
-gulp.task('webpack', function () {
-  var option = {
+gulp.task('webpack', function (callback) {
+  var firstBuildREady = false;
+
+  function done(err, stats) {
+    firstBuildREady = true;
+    if(err) {
+      return;
+    }
+    gulplog[stats.hasErrors() ? 'error' : 'info'](stats.toString({
+      colors: true
+    }));
+  }
+
+  var options = {
     watch: true,
     devtool: 'cheap-module-inline-source-map',
     module:{
@@ -191,13 +202,18 @@ gulp.task('webpack', function () {
     .pipe(plumber({
       errorHandler: notify.onError(function (err) {
         return ({
-          title: 'Webpack',
+          title: '[WEBPACK]',
           message: err.message
         })
       })
     }))
     .pipe(named())
-    .pipk(webpackStream(options))
+    .pipe(webpackStream(options, null, done))
+    .on('data', function () {
+      if(firstBuildREady) {
+        callback();
+      }
+    } )
     .pipe(gulp.dest('dist/js'))
 } );
 
