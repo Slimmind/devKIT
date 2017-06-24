@@ -185,6 +185,9 @@ gulp.task('webpack', function (callback) {
   }
 
   var options = {
+    output: {
+      pubclicPath: '/js/'
+    },
     watch: true,
     devtool: 'cheap-module-inline-source-map',
     module:{
