@@ -6,13 +6,9 @@
   "author": "BigDropInc",
   "license": "MIT",
   "dependencies": {
-    "babel": "^6.23.0",
-    "babel-core": "^6.25.0",
-    "babel-loader": "^7.0.0",
     "browser-sync": "^2.17.5",
     "glob": "^7.1.2",
     "gulp": "^3.9.1",
-    "gulp-autoprefixer": "^3.1.1",
     "gulp-changed": "*",
     "gulp-combine-mq": "^0.4.0",
     "gulp-concat": "^2.4.3",
@@ -20,6 +16,7 @@
     "gulp-imagemin": "^2.1.0",
     "gulp-jscs": "^1.4.0",
     "gulp-jshint": "^1.9.2",
+    "gulp-log": "^0.0.0",
     "gulp-rename": "^1.2.0",
     "gulp-rigger": "^0.5.8",
     "gulp-sass": "^2.3.2",
@@ -27,19 +24,21 @@
     "jshint-stylish": "^1.0.0"
   },
   "devDependencies": {
+    "autoprefixer": "latest",
+    "babel": "latest",
+    "babel-core": "latest",
+    "babel-loader": "latest",
     "babel-preset-es2015": "latest",
     "del": "latest",
     "gulp-cssmin": "^0.1.6",
     "gulp-debug": "^3.1.0",
     "gulp-notify": "^3.0.0",
     "gulp-plumber": "^1.1.0",
+    "gulp-postcss": "latest",
     "gulp-sequence": "latest",
     "gulp-sourcemaps": "^2.6.0",
     "gulp-uglify": "^1.1.0",
     "vinyl-named": "latest",
-    "webpack-stream": "latest",
-    "babel": "latest",
-    "babel-core": "latest",
-    "babel-loader": "latest"
+    "webpack-stream": "latest"
   }
 }

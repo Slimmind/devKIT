@@ -10,7 +10,6 @@ var jshint = require('gulp-jshint');
 var imageMin = require('gulp-imagemin');
 var pngCrush = require('imagemin-pngcrush');
 var sass = require('gulp-sass');
-var prefix = require('gulp-autoprefixer');
 var cmq = require('gulp-combine-mq');
 var cssMin = require('gulp-cssmin');
 var csscomb = require('gulp-csscomb');
@@ -24,11 +23,14 @@ var taskSequence = require('gulp-sequence');
 var sourceMaps = require('gulp-sourcemaps');
 var debug = require('gulp-debug');
 var notify = require('gulp-notify');
+var postcss = require('gulp-postcss');
+var autoprefixer = require('autoprefixer');
 
 var webpackStream = require('webpack-stream');
 var webpack = webpackStream.webpack;
 var named = require('vinyl-named');
 var plumber = require('gulp-plumber');
+var gulpplog = require('gulp-log');
 
 
 var pages = '_*.html';
@@ -85,6 +87,12 @@ gulp.task('fonts', function () {
 
 // CSS
 gulp.task('scss', function () {
+  var plugins = [
+    autoprefixer({
+      browsers: ['last 1 version'],
+      supports: true
+    })
+  ];
   gulp.src(['assets/css/global.scss', 'assets/css/pages/*.scss'])
     .pipe(plumber({
       errorHandler: notify.onError(function (err) {
@@ -97,7 +105,7 @@ gulp.task('scss', function () {
     .pipe(sourceMaps.init())
     .pipe(changed('dist/css'))
     .pipe(sass())
-    .pipe(prefix('last 2 versions', '> 1%', 'ie 10'))
+    .pipe(postcss(plugins))
     .pipe(cmq({
       beautify: true
     }))
@@ -110,7 +118,6 @@ gulp.task('scss', function () {
 gulp.task('scss-prod', function () {
   gulp.src(['assets/css/global.scss', 'assets/css/pages/*.scss'])
     .pipe(sass())
-    .pipe(prefix('last 2 versions', '> 1%', 'ie 10'))
     .pipe(cmq({
       beautify: true
     }))
@@ -136,7 +143,7 @@ gulp.task('lint', function () {
     .pipe(jshint.reporter('jshint-stylish'));
 });
 
-gulp.task('js', ['jscs', 'webpack', 'lint'], function () {
+gulp.task('js', ['jscs', /*'webpack',*/ 'lint'], function () {
   gulp.src(['assets/js/*.js'])
     .pipe(sourceMaps.init())
     .pipe(rigger())
@@ -228,5 +235,5 @@ gulp.task('watch', function () {
 });
 
 // DEFAULTS
-gulp.task('default', taskSequence('clean', ['html', 'images', 'fonts', 'scss', 'js', /*'serve',*/ 'watch']));
+gulp.task('default', taskSequence(/*'clean', */['html', 'images', 'fonts', 'scss', 'js', /*'serve',*/ 'watch']));
 gulp.task('prod', ['fonts', 'images-prod', 'scss-prod', 'js-prod']);

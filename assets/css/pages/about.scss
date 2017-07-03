@@ -1,5 +1,10 @@
-@import "../global";
-@import "../libs/variables";
-@import "../libs/mixins";
+// @import "../global";
+// @import "../libs/variables";
+// @import "../libs/mixins";
 //sections
-
+div {
+  display: flex;
+}
+@supports ( -webkit-appearance: none ) or ( appearance: none ) {
+  appearance: none;
+}
