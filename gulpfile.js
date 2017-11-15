@@ -25,13 +25,7 @@ var debug = require('gulp-debug');
 var notify = require('gulp-notify');
 var postcss = require('gulp-postcss');
 var autoprefixer = require('autoprefixer');
-
-var webpackStream = require('webpack-stream');
-var webpack = webpackStream.webpack;
-var named = require('vinyl-named');
 var plumber = require('gulp-plumber');
-var gulpplog = require('gulp-log');
-
 
 var pages = '_*.html';
 var syncPages = '*.html';
@@ -143,7 +137,7 @@ gulp.task('lint', function () {
     .pipe(jshint.reporter('jshint-stylish'));
 });
 
-gulp.task('js', ['jscs', /*'webpack',*/ 'lint'], function () {
+gulp.task('js', ['jscs', 'lint'], function () {
   gulp.src(['assets/js/*.js'])
     .pipe(sourceMaps.init())
     .pipe(rigger())
@@ -158,6 +152,7 @@ gulp.task('js-prod', ['jscs', 'lint'], function () {
     .pipe(rename({
       suffix: '.min'
     }))
+    .pipe(debug({title: 'dest'}))
     .pipe(gulp.dest('dist/js'));
 });
 
@@ -165,7 +160,6 @@ gulp.task('js-prod', ['jscs', 'lint'], function () {
 gulp.task('serve', function () {
   browserSync.init({
     proxy: startPage
-    // server: 'dist'
   });
 
   browserSync.watch(['dist/**/*.*', syncPages]).on('change', browserSync.reload)
@@ -177,56 +171,6 @@ gulp.task('clean', function () {
   del.sync(['dist/**']);
 } );
 
-// WEBPACK
-gulp.task('webpack', function (callback) {
-  var firstBuildREady = false;
-
-  function done(err, stats) {
-    firstBuildREady = true;
-    if(err) {
-      return;
-    }
-    gulplog[stats.hasErrors() ? 'error' : 'info'](stats.toString({
-      colors: true
-    }));
-  }
-
-  var options = {
-    output: {
-      pubclicPath: '/js/'
-    },
-    watch: true,
-    devtool: 'cheap-module-inline-source-map',
-    module:{
-      loaders: [{
-        test: /\.js$/,
-        include: path.join(__dirname, 'assets'),
-        loader: 'babel?presets[]=es2015'
-      }]
-    },
-    plugins: [
-      new webpack.NoErrorsPlugin()
-    ]
-  };
-  gulp.src('assets/js/*.js')
-    .pipe(plumber({
-      errorHandler: notify.onError(function (err) {
-        return ({
-          title: '[WEBPACK]',
-          message: err.message
-        })
-      })
-    }))
-    .pipe(named())
-    .pipe(webpackStream(options, null, done))
-    .on('data', function () {
-      if(firstBuildREady) {
-        callback();
-      }
-    } )
-    .pipe(gulp.dest('dist/js'))
-} );
-
 // WATCH
 gulp.task('watch', function () {
   gulp.watch('assets/js/**/*.js', ['js']);
@@ -234,6 +178,7 @@ gulp.task('watch', function () {
   gulp.watch('assets/css/**/*.scss', ['scss']);
 });
 
-// DEFAULTS
-gulp.task('default', taskSequence(/*'clean', */['html', 'images', 'fonts', 'scss', 'js', /*'serve',*/ 'watch']));
-gulp.task('prod', ['fonts', 'images-prod', 'scss-prod', 'js-prod']);
+// DEFAULT
+
+gulp.task('default', taskSequence('clean', 'html', 'images', 'fonts', 'scss', 'js', /*'serve',*/ 'watch'));
+gulp.task('prod', taskSequence('fonts', 'images-prod', 'scss-prod', 'js-prod'));
