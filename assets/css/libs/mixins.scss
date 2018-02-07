@@ -1,5 +1,15 @@
 @import "variables";
 
+@mixin clearfix() {
+  &:before,
+  &:after {
+    content: " "; // 1
+    display: table; // 2
+  }
+  &:after {
+    clear: both;
+  }
+}
 @mixin dots(){
   //display: block;
   white-space: nowrap;
@@ -63,7 +73,7 @@
     width: $width;
   }
 }
-@mixin inlineWhiteSpace($font-size, $line-height) {
+@mixin inlined ($font-size: null, $line-height:null) {
   font-size: 0;
   line-height: 0;
   letter-spacing: -5px;
@@ -90,84 +100,49 @@
 }
 
 // -- MEDIA QUERIES
-
+@mixin ie {
+  @media (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    @content;
+  }
+}
 @mixin mob-landscape {
   @media screen and(min-width: 480px) and (orientation: landscape) {
     @content;
   }
 }
-@mixin xmob-landscape {
-  @media screen and(min-width: 568px) and (orientation: landscape) {
+// 640
+@mixin small {
+  @media screen and(min-width: $small-breakpoint) {
     @content;
   }
 }
-@mixin xxmob-landscape {
-  @media screen and(min-width: 667px) and (orientation: landscape) {
+// 768
+@mixin xsmall {
+  @media screen and(min-width: $xsmall-breakpoint) {
     @content;
   }
 }
-@mixin xxxmob-landscape {
-  @media screen and(min-width: 736px) and (orientation: landscape) {
+// 1025
+@mixin medium {
+  @media screen and(min-width: $medium-breakpoint) {
     @content;
   }
 }
-@mixin xxmob {
-  @media screen and(min-width: 414px) {
+//1200
+@mixin xmedium {
+  @media screen and(min-width: $xmedium-breakpoint) {
     @content;
   }
 }
-@mixin xxxmob {
-  @media screen and(min-width: 640px) {
+// 1600
+@mixin large {
+  @media screen and(min-width: $large-breakpoint) {
     @content;
   }
 }
-@mixin tab {
-  @media screen and(min-width: 768px) {
+// 1800
+@mixin xlarge {
+  @media screen and(min-width: $xlarge-breakpoint) {
     @content;
   }
-}
-@mixin xtab {
-  @media screen and(min-width: 1024px) {
-    @content;
-  }
-}
-@mixin lap {
-  @media screen and(min-width: 1280px) {
-    @content;
-  }
-}
-@mixin xlap {
-  @media screen and(min-width: 1440px) {
-    @content;
-  }
-}
-@mixin desk {
-  @media screen and(min-width: 1600px) {
-    @content;
-  }
-}
-@mixin xdesk {
-  @media screen and(min-width: 2560px) {
-    @content;
-  }
-}
-
-/*=======================================
-    TESTING MEDIA QUERIES
-=======================================*/
-
-@mixin for-phone-only {
-  @media (max-width: 599px) { @content; }
-}
-@mixin for-tablet-portrait-up {
-  @media (min-width: 600px) { @content; }
-}
-@mixin for-tablet-landscape-up {
-  @media (min-width: 900px) { @content; }
-}
-@mixin for-desktop-up {
-  @media (min-width: 1200px) { @content; }
-}
-@mixin for-big-desktop-up {
-  @media (min-width: 1800px) { @content; }
 }

@@ -1,9 +1,19 @@
+/* //= plugins/plugin_name.js */
+
 (function ($, window, document) {
   'use strict';
   var page = {
     init: function () {
-      console.log('hello!');
+      page.remoteFunc();
     },
+    noDev: function () {
+      if ((typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1)) {
+        $('.no-dev').removeClass('no-dev');
+      }
+    },
+
+    //= global/remoteFunc.js
+
     isDev: function () {
       return !$('html').hasClass('no-dev') || window.innerWidth < 1280;
     },
@@ -22,11 +32,4 @@
     'scroll': page.scroll
   });
 
-  window.isDevice = page.isDev;
-
 })(jQuery, window, document);
-
-
-
-
-

@@ -2,50 +2,116 @@
     $dir = getcwd();
     $f = scandir($dir);
 ?>
-<style>
-    body {
-        background: url('https://cdn.dribbble.com/users/162759/screenshots/2680829/underthesea_1x.jpg');
-    }
-    ol {
-        width: 100%;
-        max-width: 480px;
-        margin: 30px auto;
-        padding: 0;
-        list-style-type: decimal;
-    }
-    ol li {
-        display: block;
-        margin-bottom: 5px;
-    }
-    ol a {
-        display: block;
-        font-family: sans-serif;
-        font-size: 20px;
-        line-height: 24px;
-        border-radius: 20px;
-        border: 4px solid #fff;
-        padding: 5px 15px;
-        width: auto;
-        color: #fff;
-        background-color: #1DB6BB;
-        text-decoration: none;
-        transition-property: border-color, background-color;
-        transition: .3s ease;
-    }
-    ol a:hover {
-        background-color: rgba(0, 100, 120, .8);
-        border-color: #1DB6BB;
-        color: #fff;
-    }
-        
-</style>
+<!DOCTYPE html>
+<html lang="en" class="no-dev">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport"
+                    content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <link rel="shortcut icon" href="dist/images/apple-icon.png"
+                    type="image/x-icon">
+        <link rel="icon" href="dist/images/favicon.ico" type="image/x-icon">
+        <link rel="apple-touch-icon" href="dist/images/apple-icon.png"/>
+        <meta content="telephone=no" name="format-detection">
+        <title>MENU</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            html, body {
+                width: 100%;
+                height: 100%;
+            }
+            main {
+                min-height: 100%;
 
-<ol>
-    <?php foreach ($f as $file) :?>
-        <?php if (preg_match('/^(?!_).*html$/', $file)) :?>
-            <li style="margin-left: 20px;">
-                <a href="<?php echo ($file)?>" target="_blank"><?php echo ($file)?></a>
-            </li>
-        <?php endif?>
-    <?php endforeach?>
-</ol>
+                background-image: url('https://picsum.photos/1920/980/?random');
+                background-repeat:repeat;
+                background-size: cover;
+                background-position: 50% 50%;
+            }
+            ul {
+                width: 100%;
+                height: 100vh;
+                margin: 0 auto;
+                padding: 30px 0;
+                list-style-type: none;
+                counter-reset: pages;
+            }
+            ul li {
+                position: relative;
+                display: block;
+                margin-bottom: 5px;
+                padding-left: 50px;
+
+                counter-increment: pages;
+                width: 100%;
+                max-width: 480px;
+            }
+            ul li:before {
+                content: counter(pages);
+                position: absolute;
+                top: 50%;
+                left: 0;
+                transform: translate3d(0, -50%, 0);
+                width: 40px;
+                height: 40px;
+                color: #232f3f;
+                font: 700 20px/40px sans-serif;
+                transition: color .7s;
+                border-radius: 50%;
+                background-color: #fff;
+                text-align: center;
+            }
+            ul a {
+                display: block;
+                font-family: sans-serif;
+                font-size: 20px;
+                line-height: 24px;
+                border-radius: 3px;
+                padding: 10px 15px;
+                width: auto;
+                color: #fff;
+                background-color: #232f3f;
+                text-decoration: none;
+                transition: background-color .3s ease;
+            }
+            ul a:visited {
+                background-color: #45546D;
+            }
+            @media screen and (min-width: 1024px) {
+                ul{
+                    flex-direction: column;
+                    align-items: center;
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: flex-start;
+                }
+                ul li:hover a {
+                    background-color: rgba(0, 100, 120, .8);
+                    color: #fff;
+                }
+                ul li:hover:before {
+                    color: rgba(0, 100, 120, .8);
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <main>
+            <ul>
+                <?php foreach ($f as $file) :?>
+                    <?php if (preg_match('/^(?!_).*html$/', $file)) :?>
+                        <li>
+                            <a href="<?php echo ($file)?>" target="_blank"><?php echo ($file)?></a>
+                        </li>
+                    <?php endif?>
+                <?php endforeach?>
+            </ul>
+        </main>
+    </body>
+</html>

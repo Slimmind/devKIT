@@ -10,6 +10,7 @@ var jshint = require('gulp-jshint');
 var imageMin = require('gulp-imagemin');
 var pngCrush = require('imagemin-pngcrush');
 var sass = require('gulp-sass');
+var prefix = require('gulp-autoprefixer');
 var cmq = require('gulp-combine-mq');
 var cssMin = require('gulp-cssmin');
 var csscomb = require('gulp-csscomb');
@@ -23,8 +24,6 @@ var taskSequence = require('gulp-sequence');
 var sourceMaps = require('gulp-sourcemaps');
 var debug = require('gulp-debug');
 var notify = require('gulp-notify');
-var postcss = require('gulp-postcss');
-var autoprefixer = require('autoprefixer');
 var plumber = require('gulp-plumber');
 
 var pages = '_*.html';
@@ -39,7 +38,7 @@ if (_p !== -1) {
     pages = pageName;
   }
 }
-var pagesWatch = [pages, 'templates/*.html'];
+var pagesWatch = [pages, 'templates/*.html', 'popups/*.html'];
 
 //HTML include
 gulp.task('html', function () {
@@ -55,7 +54,7 @@ gulp.task('html', function () {
     .pipe(gulp.dest(''));
 });
 
-// Images, Fonts
+// IMAGES
 gulp.task('images', function () {
   return gulp.src('assets/images/**')
     .pipe(changed('dist/images'))
@@ -71,9 +70,11 @@ gulp.task('images-prod', function () {
       ],
       use: [pngCrush()]
     }))
+    .pipe(debug({title: 'dest'}))
     .pipe(gulp.dest('dist/images'));
 });
 
+// FONTS
 gulp.task('fonts', function () {
   gulp.src('assets/fonts/**')
     .pipe(gulp.dest('dist/fonts'));
@@ -81,12 +82,6 @@ gulp.task('fonts', function () {
 
 // CSS
 gulp.task('scss', function () {
-  var plugins = [
-    autoprefixer({
-      browsers: ['last 1 version'],
-      supports: true
-    })
-  ];
   gulp.src(['assets/css/global.scss', 'assets/css/pages/*.scss'])
     .pipe(plumber({
       errorHandler: notify.onError(function (err) {
@@ -99,7 +94,7 @@ gulp.task('scss', function () {
     .pipe(sourceMaps.init())
     .pipe(changed('dist/css'))
     .pipe(sass())
-    .pipe(postcss(plugins))
+    .pipe(prefix('last 2 versions', '> 1%', 'ie 10'))
     .pipe(cmq({
       beautify: true
     }))
@@ -112,6 +107,7 @@ gulp.task('scss', function () {
 gulp.task('scss-prod', function () {
   gulp.src(['assets/css/global.scss', 'assets/css/pages/*.scss'])
     .pipe(sass())
+    .pipe(prefix('last 2 versions', '> 1%', 'ie 10'))
     .pipe(cmq({
       beautify: true
     }))
@@ -180,5 +176,5 @@ gulp.task('watch', function () {
 
 // DEFAULT
 
-gulp.task('default', taskSequence('clean', 'html', 'images', 'fonts', 'scss', 'js', /*'serve',*/ 'watch'));
+gulp.task('default', taskSequence('clean', 'html', 'images', 'fonts', 'scss', 'js', /*'serve', */'watch'));
 gulp.task('prod', taskSequence('fonts', 'images-prod', 'scss-prod', 'js-prod'));

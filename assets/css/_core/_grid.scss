@@ -1,0 +1,79 @@
+@import "../libs/variables";
+//
+// Grid system
+// --------------------------------------------------
+
+* {
+  @include box-sizing(border-box);
+}
+
+*:before,
+*:after {
+  @include box-sizing(border-box);
+}
+
+// Container widths
+//
+// Set the container width, and override it for fixed navbars in media queries.
+
+.container {
+  @include container-fixed();
+  width: 100%;
+  @media (min-width: $small-breakpoint) { //640
+    width: $container-sm; //100%
+  }
+  @media (min-width: $xsmall-breakpoint) { //768
+    width: $container-sm; //100%
+  }
+  @media (min-width: $medium-breakpoint) { //1025
+    width: $container-m;
+    padding-left: $padding-lap;
+    padding-right: $padding-lap;
+  }
+  @media (min-width: $xmedium-breakpoint) { //1200
+    width: $container-xm;
+  }
+  @media (min-width: $large-breakpoint) { //1600
+    width: $container-l;
+  }
+  @media (min-width: $xlarge-breakpoint) { //1800
+    width: $container-xl;
+  }
+}
+
+// Fluid container
+
+.container-fluid {
+  @include container-fixed();
+}
+
+// Row
+
+.row {
+  @include make-row();
+}
+
+// Columns
+
+@include make-grid-columns();
+
+// Extra small grid
+
+@include make-grid(all);
+
+@media (min-width: $xsmall-breakpoint) { //768
+  @include make-grid(tab);
+}
+
+@media (min-width: $medium-breakpoint) { //1025
+  @include make-grid(lap);
+}
+
+@media (min-width: $xmedium-breakpoint) { //1200
+  @include make-grid(desk);
+}
+
+// Large grid
+
+@include lg-grid($lg-grid);
+
