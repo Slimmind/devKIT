@@ -1,0 +1,15 @@
+//************************
+//    VARIABLES
+//************************
+$gl-gridName:   grid !default;
+$gl-colName:   col !default;
+$gl-attributeName: class !default;
+$gl-gutter:    1rem !default; // Total left + right
+$gl-gutter-vertical:    1rem !default;
+$gl-mq-width: 'min-width' !default;
+$gl-mq-list: (
+        xs: 36em,
+        sm: 48em,
+        md: 64em,
+        lg: 80em
+) !default;

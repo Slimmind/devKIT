@@ -1,3 +1,3 @@
 remoteFunc: function () {
-  alert('remoteFunc works');
+  // alert('remoteFunc works');
 },
