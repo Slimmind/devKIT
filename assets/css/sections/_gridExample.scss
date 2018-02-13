@@ -2,9 +2,15 @@
   margin: 5px 0;
   border-radius: 3px;
   color: $color-white;
-  font: 14px/32px sans-serif;
+  font: 14px/40px sans-serif;
   text-align: center;
-  min-height: 32px;
+  min-height: 40px;
+}
+.container {
+  background: #CDCDCD;
+}
+hr {
+  margin: 40px 0;
 }
 .cell {
   @include template();

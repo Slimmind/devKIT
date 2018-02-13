@@ -1,3 +1,5 @@
+@import "variables";
+//
 $width: 100;
 $gutter: 10;
 $columns: 12;
@@ -6,22 +8,21 @@ $columns: 12;
   margin-right: auto;
   padding-left: $gutter + px;
   padding-right: $gutter + px;
-  background: #CDCDCD;
-  .row {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    margin-left: -$gutter + px;
-    margin-right: -$gutter + px;
-    overflow: hidden;
-    & > .col {
-      position: relative;
-      flex-shrink: 0;
-      min-height: 1px;
-      padding-left: $gutter + px;
-      padding-right: $gutter + px;
-      transition: all .7s ease;
-    }
+}
+.row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-left: -$gutter + px;
+  margin-right: -$gutter + px;
+  overflow: hidden;
+  .col {
+    position: relative;
+    flex-shrink: 0;
+    min-height: 1px;
+    padding-left: $gutter + px;
+    padding-right: $gutter + px;
+    transition: all .7s ease;
   }
 }
 @mixin centered {
@@ -33,27 +34,24 @@ $columns: 12;
   margin-right: initial !important;
 }
 
-$resolutions: 320px, 640px, 768px, 1024px, 1200px, 1366px, 1600px, 2560px;
-
-$sizeList: mob xmob tab xtab lap xlap desk xdesk;
-@each $size in $sizeList {
-  $sizeItem: index($sizeList, $size );
-  @media all and (min-width: nth($resolutions, $sizeItem)) {
+@each $className in $breakPointClassNames {
+  $sizeItem: index($breakPointClassNames, $className );
+  @media all and (min-width: nth($breakPointValues, $sizeItem)) {
     @for $i from 1 through $columns {
       $column-width: (($width / $columns) * $i) * 1%;
-      .#{$size}-#{$i} {
+      .#{$className}-#{$i} {
         width: $column-width;
       }
-      @if ($i < 12) {
-        .#{$size}-offset-#{$i} {
+      @if ($i < $columns) {
+        .#{$className}-offset-#{$i} {
           margin-left: $column-width;
         }
       }
     }
-    .#{$size}-centered {
+    .#{$className}-centered {
       @include centered;
     }
-    .#{$size}-uncentered {
+    .#{$className}-uncentered {
       @include uncentered;
     }
   }

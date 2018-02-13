@@ -12,3 +12,7 @@ $medium-breakpoint: 1025px;
 $xmedium-breakpoint: 1200px;
 $large-breakpoint: 1600px;
 $xlarge-breakpoint: 1800px;
+
+$breakPointValues: 320px, 640px, 768px, 1025px, 1200px, 1600px;
+
+$breakPointClassNames: mob, xmob, tab, xtab, lap, desk;

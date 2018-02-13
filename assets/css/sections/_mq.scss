@@ -1,0 +1,61 @@
+section {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 200px);
+  transition: background-color .3s;
+  &:before {
+    content: "";
+    @include pos(absolute, center, center);
+    width: 99%;
+    height: 98%;
+    border: 2px solid rgba(255,255,255, .3);
+  }
+  h3 {
+    @include pos(absolute, center, center);
+    &:before {
+      content: '';
+      color: white;
+      text-transform: uppercase;
+    }
+  }
+}
+@include mob {
+  section {
+    background-color: indigo;
+    h3:before {
+      content: 'mob (mobile) min-width: 320px';
+    }
+  }
+}
+@include mob-landscape {
+  section {
+    background-color: orange;
+    h3:before {
+      content: 'mob-landscape (mobile landscape-mode) min-width: 480px';
+    }
+  }
+}
+@include tab {
+  section {
+    background-color: darkcyan;
+    h3:before {
+      content: 'tab (tablet) min-width: 768px';
+    }
+  }
+}
+@include lap {
+  section {
+    background-color: green;
+    h3:before {
+      content: 'lap (laptop) min-width: 1280px';
+    }
+  }
+}
+@include desk {
+  section {
+    background-color: darkblue;
+    h3:before {
+      content: 'desk (desktop) min-width: 1600px';
+    }
+  }
+}

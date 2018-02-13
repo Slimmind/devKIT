@@ -1,30 +1,3 @@
 @import "../libs/variables";
-/*
-    ==== GRID ====
-*/
-
-// ширина контейнера
-$container-sm: 100%;
-$container-m: 960px;
-$container-xm: 1170px;
-$container-l: 1400px;
-$container-xl: 1700px;
-
-// горизонтальные padding для @media $medium-breakpoint
-$padding-lap: 15px;
-
-// количество колонок
-$grid-columns:         12 !default;
-// поля для колонок
-$grid-padding:         20px !default;
-
-
-//== Компиляция классов для сетки
-// классы колонок .lg для @media $large-breakpoint
-$lg-grid : true;
-// классы offset для колонок
-$offset-class : true;
-// классы push и pull для колонок
-$pull_push-class: false;
 
 
