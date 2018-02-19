@@ -1,0 +1,31 @@
+.slide {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 200px);
+  .img-part {
+    @include pos(absolute, center, center);
+    width: calc(100vh - 200px);
+    height: calc(100vh - 200px);
+    @include bg(center, center, cover);
+    border-radius: 50%;
+    overflow: hidden;
+    &:before {
+      content: '';
+      @include pos(absolute, 5px,5px,5px,5px);
+      background-color: $color-white;
+      opacity: .5;
+      transition: opacity;
+      border-radius: 50%;
+      animation: slide-animation 10s cubic-bezier(0.600, -0.280, 0.735, 0.045) infinite;
+    }
+    @for $i from 2 through 5 {
+      &:nth-child(#{$i}) {
+        width: 100 - (20 * $i) + vh;
+        height: 100 - (20 * $i) + vh;
+        &:before {
+          animation-delay: 1 * $i + s;
+        }
+      }
+    }
+  }
+}

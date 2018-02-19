@@ -5,13 +5,23 @@ $path-svg: "../../svg";
 $color-white: #ffffff;
 $color-black: #000000;
 
-// BREAK-POINTS
-$small-breakpoint: 640px;
-$xsmall-breakpoint: 768px;
-$medium-breakpoint: 1025px;
-$xmedium-breakpoint: 1200px;
-$large-breakpoint: 1600px;
-$xlarge-breakpoint: 1800px;
+$color: #002332;
+
+//// BREAK-POINTS
+//$small-breakpoint: 640px;
+//$xsmall-breakpoint: 768px;
+//$medium-breakpoint: 1025px;
+//$xmedium-breakpoint: 1200px;
+//$large-breakpoint: 1600px;
+//$xlarge-breakpoint: 1800px;
+
+//
+$mob: 320px;
+$mob-landscape: 480px;
+$tab: 768px;
+$xtab: 1024px;
+$lap: 1280px;
+$desk: 1600px;
 
 $breakPointValues: 320px, 640px, 768px, 1025px, 1200px, 1600px;
 
